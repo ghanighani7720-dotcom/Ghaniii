@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AdyGhany Cosmic Portal</title>
+<title>Legendary Eye of Horus - By AdyGhany</title>
 
 <style>
 *{
@@ -13,83 +13,113 @@ box-sizing:border-box;
 }
 
 body{
-height:100vh;
 overflow:hidden;
-background:#000;
+height:100vh;
+background:linear-gradient(to bottom,#050505,#1a1208);
 display:flex;
 justify-content:center;
 align-items:center;
 font-family:Arial,sans-serif;
 }
 
-canvas{
+.sky{
 position:absolute;
 width:100%;
 height:100%;
+background:
+radial-gradient(circle at 50% 20%, rgba(255,255,200,.15), transparent 300px);
 }
 
-.portal{
-position:relative;
-width:300px;
-height:300px;
+.moon{
+position:absolute;
+top:80px;
+width:120px;
+height:120px;
 border-radius:50%;
-border:4px solid rgba(0,255,255,.5);
+background:#fff8d6;
 box-shadow:
-0 0 20px cyan,
-0 0 60px cyan,
-0 0 120px blue;
+0 0 30px #fff,
+0 0 80px #ffe88a;
+}
+
+.pyramid{
+position:absolute;
+bottom:0;
+width:0;
+height:0;
+border-left:220px solid transparent;
+border-right:220px solid transparent;
+border-bottom:300px solid #3b2a1a;
+filter:brightness(1.1);
+}
+
+.horus-wrap{
+position:relative;
+z-index:10;
+}
+
+.energy{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:320px;
+height:320px;
+border-radius:50%;
+border:2px solid rgba(212,175,55,.3);
 animation:spin 12s linear infinite;
 }
 
-.portal::before{
+.energy::before{
 content:"";
 position:absolute;
 inset:20px;
 border-radius:50%;
-border:3px solid rgba(255,0,255,.5);
-animation:spinReverse 8s linear infinite;
+border:2px solid rgba(255,215,0,.4);
 }
 
-.portal::after{
-content:"";
-position:absolute;
-inset:50px;
-border-radius:50%;
-background:radial-gradient(circle,
-rgba(0,255,255,.4),
-rgba(0,0,255,.1),
-transparent);
-}
-
-@keyframes spin{
-from{transform:rotate(0deg);}
-to{transform:rotate(360deg);}
-}
-
-@keyframes spinReverse{
-from{transform:rotate(360deg);}
-to{transform:rotate(0deg);}
-}
-
-.name{
-position:absolute;
-color:white;
-font-size:48px;
-font-weight:bold;
-letter-spacing:4px;
+.horus{
+font-size:220px;
+color:#d4af37;
 text-shadow:
-0 0 10px cyan,
-0 0 20px cyan,
-0 0 40px blue;
-animation:pulse 2s infinite;
+0 0 10px #d4af37,
+0 0 30px #d4af37,
+0 0 60px gold,
+0 0 120px gold;
+animation:pulse 3s infinite;
+}
+
+.title{
+text-align:center;
+color:#d4af37;
+font-size:38px;
+letter-spacing:5px;
+text-shadow:0 0 20px gold;
+margin-top:-20px;
 }
 
 .credit{
+text-align:center;
+margin-top:10px;
+color:#ddd;
+letter-spacing:4px;
+font-size:15px;
+}
+
+.hiero{
 position:absolute;
-margin-top:90px;
-color:#aaa;
-letter-spacing:3px;
-font-size:14px;
+color:rgba(212,175,55,.4);
+font-size:30px;
+animation:fall linear infinite;
+}
+
+@keyframes fall{
+from{
+transform:translateY(-100px);
+}
+to{
+transform:translateY(110vh);
+}
 }
 
 @keyframes pulse{
@@ -100,65 +130,49 @@ transform:scale(1);
 transform:scale(1.08);
 }
 }
+
+@keyframes spin{
+from{
+transform:translate(-50%,-50%) rotate(0deg);
+}
+to{
+transform:translate(-50%,-50%) rotate(360deg);
+}
+}
 </style>
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
+<div class="sky"></div>
+<div class="moon"></div>
 
-<div class="portal"></div>
+<div class="pyramid"></div>
 
-<div style="position:absolute;text-align:center;">
-<div class="name">AdyGhany</div>
-<div class="credit">COSMIC PORTAL</div>
+<div class="horus-wrap">
+<div class="energy"></div>
+
+<div class="horus">𓂀</div>
+
+<div class="title">EYE OF HORUS</div>
+<div class="credit">BY AdyGhany</div>
 </div>
 
 <script>
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
+const symbols=["𓂀","𓃭","𓆣","𓁹","𓏏","𓋹","𓊖"];
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+for(let i=0;i<40;i++){
 
-const stars=[];
+let s=document.createElement("div");
+s.className="hiero";
+s.innerText=symbols[Math.floor(Math.random()*symbols.length)];
 
-for(let i=0;i<300;i++){
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*2,
-s:Math.random()*2+0.5
-});
+s.style.left=Math.random()*100+"vw";
+s.style.animationDuration=(5+Math.random()*10)+"s";
+s.style.fontSize=(20+Math.random()*30)+"px";
+
+document.body.appendChild(s);
 }
-
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-ctx.fillStyle="white";
-
-stars.forEach(star=>{
-ctx.beginPath();
-ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
-ctx.fill();
-
-star.y+=star.s;
-
-if(star.y>canvas.height){
-star.y=0;
-star.x=Math.random()*canvas.width;
-}
-});
-
-requestAnimationFrame(animate);
-}
-
-animate();
-
-window.addEventListener("resize",()=>{
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-});
 </script>
 
 </body>
