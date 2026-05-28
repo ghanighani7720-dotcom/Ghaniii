@@ -3,14 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!--
-Project : Grace Animated Face
-Creator : AdyGhany
-Powered by GitHub Pages
--->
-
-<title>Grace - By AdyGhany</title>
+<title>AdyGhany Cosmic Portal</title>
 
 <style>
 *{
@@ -21,213 +14,151 @@ box-sizing:border-box;
 
 body{
 height:100vh;
+overflow:hidden;
+background:#000;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle,#1a1a2e,#000);
-overflow:hidden;
 font-family:Arial,sans-serif;
 }
 
-.stars{
-position:fixed;
+canvas{
+position:absolute;
 width:100%;
 height:100%;
-background-image:
-radial-gradient(white 1px, transparent 1px);
-background-size:30px 30px;
-animation:moveStars 20s linear infinite;
-opacity:.4;
 }
 
-@keyframes moveStars{
-from{
-transform:translateY(0);
-}
-to{
-transform:translateY(100px);
-}
-}
-
-.face{
+.portal{
 position:relative;
-width:320px;
-height:420px;
-background:#f4c9a8;
+width:300px;
+height:300px;
 border-radius:50%;
-box-shadow:0 0 40px rgba(255,180,120,.4);
+border:4px solid rgba(0,255,255,.5);
+box-shadow:
+0 0 20px cyan,
+0 0 60px cyan,
+0 0 120px blue;
+animation:spin 12s linear infinite;
 }
 
-.hair{
+.portal::before{
+content:"";
 position:absolute;
-width:360px;
-height:240px;
-background:#2b1408;
-top:-40px;
-left:-20px;
-border-radius:50% 50% 40% 40%;
-z-index:-1;
-}
-
-.eye{
-position:absolute;
-width:50px;
-height:50px;
-background:white;
+inset:20px;
 border-radius:50%;
-top:150px;
-overflow:hidden;
-box-shadow:inset 0 0 10px rgba(0,0,0,.3);
+border:3px solid rgba(255,0,255,.5);
+animation:spinReverse 8s linear infinite;
 }
 
-.left{
-left:85px;
-}
-
-.right{
-right:85px;
-}
-
-.pupil{
-width:22px;
-height:22px;
-background:black;
+.portal::after{
+content:"";
+position:absolute;
+inset:50px;
 border-radius:50%;
-position:absolute;
-top:14px;
-left:14px;
-transition:.05s;
+background:radial-gradient(circle,
+rgba(0,255,255,.4),
+rgba(0,0,255,.1),
+transparent);
 }
 
-.eyelid{
-position:absolute;
-width:100%;
-height:0%;
-background:#f4c9a8;
-animation:blink 5s infinite;
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
 }
 
-@keyframes blink{
-0%,45%,48%,100%{
-height:0%;
-}
-46%,47%{
-height:100%;
-}
-}
-
-.nose{
-position:absolute;
-width:18px;
-height:55px;
-background:#e7b48e;
-border-radius:20px;
-top:190px;
-left:151px;
-}
-
-.mouth{
-position:absolute;
-width:90px;
-height:40px;
-border-bottom:5px solid #d34d6d;
-border-radius:0 0 60px 60px;
-top:285px;
-left:115px;
-}
-
-.glow{
-position:absolute;
-width:100%;
-height:100%;
-border-radius:50%;
-box-shadow:0 0 50px cyan;
-opacity:.15;
+@keyframes spinReverse{
+from{transform:rotate(360deg);}
+to{transform:rotate(0deg);}
 }
 
 .name{
 position:absolute;
-bottom:-70px;
-width:100%;
-text-align:center;
-font-size:38px;
+color:white;
+font-size:48px;
 font-weight:bold;
-color:#fff;
-text-shadow:0 0 20px cyan;
 letter-spacing:4px;
+text-shadow:
+0 0 10px cyan,
+0 0 20px cyan,
+0 0 40px blue;
+animation:pulse 2s infinite;
 }
 
 .credit{
 position:absolute;
-bottom:-105px;
-width:100%;
-text-align:center;
-font-size:16px;
+margin-top:90px;
 color:#aaa;
 letter-spacing:3px;
-text-shadow:0 0 10px cyan;
+font-size:14px;
+}
+
+@keyframes pulse{
+0%,100%{
+transform:scale(1);
+}
+50%{
+transform:scale(1.08);
+}
 }
 </style>
 </head>
 
 <body>
 
-<div class="stars"></div>
+<canvas id="stars"></canvas>
 
-<div class="face">
+<div class="portal"></div>
 
-<div class="glow"></div>
-<div class="hair"></div>
-
-<div class="eye left">
-<div class="pupil"></div>
-<div class="eyelid"></div>
-</div>
-
-<div class="eye right">
-<div class="pupil"></div>
-<div class="eyelid"></div>
-</div>
-
-<div class="nose"></div>
-<div class="mouth"></div>
-
-<div class="name">GRACE</div>
-<div class="credit">BY AdyGhany</div>
-
+<div style="position:absolute;text-align:center;">
+<div class="name">AdyGhany</div>
+<div class="credit">COSMIC PORTAL</div>
 </div>
 
 <script>
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
 
-function moveEyes(x,y){
-document.querySelectorAll(".pupil").forEach(pupil=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const eye=pupil.parentElement;
-const rect=eye.getBoundingClientRect();
+const stars=[];
 
-const cx=rect.left+rect.width/2;
-const cy=rect.top+rect.height/2;
-
-const angle=Math.atan2(y-cy,x-cx);
-
-pupil.style.transform=
-`translate(${Math.cos(angle)*8}px,
-${Math.sin(angle)*8}px)`;
-
+for(let i=0;i<300;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+s:Math.random()*2+0.5
 });
 }
 
-document.addEventListener("mousemove",e=>{
-moveEyes(e.clientX,e.clientY);
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="white";
+
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+ctx.fill();
+
+star.y+=star.s;
+
+if(star.y>canvas.height){
+star.y=0;
+star.x=Math.random()*canvas.width;
+}
 });
 
-document.addEventListener("touchmove",e=>{
-moveEyes(
-e.touches[0].clientX,
-e.touches[0].clientY
-);
-});
+requestAnimationFrame(animate);
+}
 
+animate();
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
 </script>
 
 </body>
